@@ -1,0 +1,88 @@
+<md-dialog
+  aria-label="{{ ::form.titulo }}"
+  flex-gt-md="50"
+  flex-gt-xs="70"
+  flex-xs="90"
+>
+  <form ng-submit="form.submit()">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{ ::form.titulo }}</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="form.cancel()">
+          <md-icon md-svg-src="close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content class="md-padding">
+      <div
+        ng-repeat="(name, attr) in form.attrs"
+        ng-if="(attr.type && !form.nextForm || form.nextForm)"
+      >
+        <md-datepicker
+          ng-if="attr.type === 'date'"
+          ng-model="form.obj[name]"
+          md-placeholder="{{ ::name }}"
+          md-max-date="form.today"
+          flex
+        ></md-datepicker>
+        <md-input-container
+          ng-if="attr.type !== 'date' && attr.type !== 'datetime'"
+          layout="row"
+        >
+          <md-button
+            ng-if="form.nextForm && (attr.model || attr.collection)"
+            aria-button="agregar"
+            class="md-icon-button md-raised md-accent md-hue-1"
+            ng-click="form.openForm($event, name, attr)"
+          >
+            <md-icon md-svg-src="plus" aria-label="icon-agregar"></md-icon>
+          </md-button>
+          <label>
+            {{ ::name }}
+          </label>
+          <input
+            ng-if="attr.type && !attr.enum"
+            ng-model="form.obj[name]"
+            flex
+            ng-disabled="name === attr.via"
+          />
+          <md-select
+            ng-if="attr.collection"
+            aria-label="{{ ::name }}"
+            ng-model="form.obj[name]"
+            multiple
+            flex
+            ng-disabled="name === attr.via"
+          >
+            <md-option
+              ng-repeat="item in form.opts[name]"
+              ng-value="item.id"
+            >
+              {{ ::item.titulo }}
+            </md-option>
+          </md-select>
+          <md-select
+            ng-if="attr.model || attr.enum"
+            aria-label="{{ ::name }}"
+            ng-model="form.obj[name]"
+            flex
+            ng-disabled="name === attr.via"
+          >
+            <md-option
+              ng-repeat="item in form.opts[name]"
+              ng-value="item.id"
+            >
+              {{ ::item.titulo }}
+            </md-option>
+          </md-select>
+        </md-input-container>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end center">
+      <md-button type="submit">
+        Guardar
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

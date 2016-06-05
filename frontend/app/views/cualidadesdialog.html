@@ -1,0 +1,135 @@
+
+<md-dialog
+  aria-label="Cualidades"
+  layout="column"
+  layout-align="center center"
+>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Cualidades</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="cualidades.cancel()">
+        <md-icon md-svg-src="close" aria-label="Close dialog"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content class="md-padding" flex>
+    <md-content flex>
+      <div layout="row" flex>
+        <md-card
+          ng-repeat="cualidad in cualidades.cualidades"
+        >
+          <md-card-title flex>
+            <md-card-title-text>
+              <div class="md-headline" layout="row" layout-align="center center">
+                  <span flex>
+                    {{ ::cualidad.titulo }}
+                  </span>
+                <md-button
+                  ng-class="{'md-raised': cualidades.showHistory[cualidad.id]}"
+                  aria-label="mostrar-historial"
+                  class="md-icon-button md-accent md-hue-1"
+                  ng-click="cualidades.showHistory[cualidad.id] = !cualidades.showHistory[cualidad.id]"
+                >
+                  <md-icon
+                    md-svg-src="history"
+                    aria-label="historial-icon-show"
+                  ></md-icon>
+                </md-button>
+              </div>
+                <span class="md-subhead">
+                  {{ cualidades.cualidadesjugador[cualidad.id] && cualidades.cualidadesjugador[cualidad.id].id?'última vez, ' + cualidades.getDateHumanized(cualidades.cualidadesjugador[cualidad.id].updatedAt):'Sin registros' }}
+                </span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-content flex>
+            <p>
+              {{ ::cualidad.descripcion }}
+            </p>
+
+            <md-content
+              flex
+              ng-show="cualidades.showHistory[cualidad.id]"
+              layout="column"
+            >
+              <md-list flex>
+                <md-list-item
+                  ng-repeat="item in cualidades.allcualidadesjugador[cualidad.id]"
+                  class="md-3-line"
+                  ng-class="{'md-whiteframe-2dp': item.actual}"
+                  ng-click="cualidades.deleteItemHistorial(item)"
+                >
+                  <div class="md-list-item-text" layout="column">
+                    <h3>{{ item.titulo }}</h3>
+                    <h4>Agregado {{ cualidades.getDateHumanized(item.updatedAt) }}</h4>
+                    <p>Logro {{ item.logro }} / Máximo {{ item.maximo }}</p>
+                  </div>
+                </md-list-item>
+              </md-list>
+            </md-content>
+
+          </md-card-content>
+          <md-card-actions
+            ng-show="!cualidades.showHistory[cualidad.id]"
+            layout="row"
+            layout-align="end center"
+          >
+            <form ng-submit="cualidades.submit(cualidad)" layout="column" flex>
+              <md-input-container layout="row">
+                <label>
+                  Logro
+                </label>
+                <input
+                  ng-model="cualidades.cualidadesjugador[cualidad.id].logro"
+                />
+              </md-input-container>
+              <md-input-container layout="row">
+                <label>
+                  Máximo
+                </label>
+                <input
+                  ng-model="cualidades.cualidadesjugador[cualidad.id].maximo"
+                />
+              </md-input-container>
+              <div layout="row" flex>
+                <div layout="column" flex>
+                  <md-button
+                    class="md-primary md-raised"
+                    aria-label="guardar"
+                    type="submit"
+                    ng-class="{'md-icon-button': !$mdMedia('gt-sm')}"
+                  >
+                    <md-icon
+                      md-svg-src="new-box"
+                      aria-label="Nuevo-registro"
+                    ></md-icon>
+                    <span ng-show="$mdMedia('gt-sm')">
+                      Nuevo
+                    </span>
+                  </md-button>
+                </div>
+                <div layout="column" flex >
+                  <md-button
+                    ng-if="cualidades.cualidadesjugador[cualidad.id].id"
+                    class="md-accent md-raised"
+                    aria-label="guardar"
+                    ng-click="cualidades.update(cualidad)"
+                    ng-class="{'md-icon-button': !$mdMedia('gt-sm')}"
+                  >
+                    <md-icon
+                      md-svg-src="pencil"
+                      aria-label="Nuevo-registro"
+                    ></md-icon>
+                    <span ng-show="$mdMedia('gt-sm')">
+                      Modificar
+                    </span>
+                  </md-button>
+                </div>
+              </div>
+            </form>
+          </md-card-actions>
+        </md-card>
+      </div>
+    </md-content>
+  </md-dialog-content>
+</md-dialog>

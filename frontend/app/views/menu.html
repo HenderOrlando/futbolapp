@@ -1,0 +1,270 @@
+
+<md-toolbar class="md-hue-3">
+  <div class="md-toolbar-tools">
+    <md-button
+      ng-click="perfil.toggleMenu()"
+      ng-show="!$mdMedia('gt-sm')"
+      aria-label="abrir-menu"
+    >
+      <md-icon md-svg-src="menu" aria-label="Menu"></md-icon>
+    </md-button>
+    <form
+      ng-submit="menu.search.submit()"
+      layout="row"
+      flex
+      layout-align="center center"
+    >
+      <md-input-container
+        layout="row"
+        flex
+      >
+        <label>
+          Buscar en {{ menu.model.titulo }}
+        </label>
+        <input ng-model="menu.search.query" />
+      </md-input-container>
+      <!--<div
+        ng-if="menu.search.attrs.indexOf('fechas') > -1"
+        layout="row"
+        flex
+      >
+        <md-input-container
+          layout="row"
+          flex
+        >
+          <label>Inicio</label>
+          <input ng-model="menu.search.inicio" />
+        </md-input-container>
+        <md-input-container
+          layout="row"
+          flex
+        >
+          <label>Fin</label>
+          <input ng-model="menu.search.fin" />
+        </md-input-container>
+      </div>-->
+      <!--<md-input-container>
+        <label>
+          en Atributo(s)
+        </label>
+        <md-select
+          ng-if="menu.search.attrlist.length > 0"
+          aria-label="select-attr-search"
+          ng-model="menu.search.attrs"
+          multiple
+        >
+          <md-option
+            ng-disable="item.slug !== 'fechas' && menu.search.attrs.indexOf('fechas') > -1"
+            ng-repeat="item in menu.search.attrlist"
+            ng-value="item.slug"
+          >
+            {{ ::item.titulo }}
+          </md-option>
+        </md-select>
+      </md-input-container>-->
+      <md-button
+        type="submit"
+        aria-label="buscar"
+        class="md-icon-button md-raised"
+      >
+        <md-icon md-svg-src="magnify" aria-label="Buscar"></md-icon>
+      </md-button>
+      <md-button
+        ng-hide="menu.selected.length > 0"
+        ng-click="menu.openForm($event)"
+        class="md-icon-button md-raised md-primary md-hue-2"
+      >
+        <md-icon md-svg-src="plus" aria-label="Agregar"></md-icon>
+      </md-button>
+      <md-button
+        ng-show="menu.selected.length > 0"
+        ng-click="menu.borrar($event)"
+        class="md-icon-button md-raised md-warn"
+      >
+        <md-icon md-svg-src="delete-forever" aria-label="Borrar"></md-icon>
+      </md-button>
+    </form>
+  </div>
+</md-toolbar>
+
+<md-table-container layout="column" flex>
+  <table
+    md-table
+    md-row-select
+    multiple
+    ng-model="menu.selected"
+    md-progress="menu.promise"
+  >
+    <thead
+      md-head
+      md-order="menu.query.orderby"
+      md-on-reorder="menu.loadList"
+    >
+    <tr md-row>
+      <th
+        md-column
+        md-numeric="menu.isNumber(attr)"
+        ng-repeat="(name, attr) in menu.attrs"
+        ng-if="attr.type"
+        md-order-by="{{ ::(name === 'titulo'?'slug':name) }}"
+      >
+        <span>
+          {{ ::name }} {{ name === 'titulo'?'/ nombre':'' }}
+        </span>
+      </th>
+      <th
+        md-column
+        md-numeric="menu.isNumber(attr)"
+        ng-repeat="(name, attr) in menu.attrs"
+        ng-if="!attr.type"
+      >
+        <span>
+          {{ ::name }} {{ name === 'titulo'?'/ nombre':'' }}
+        </span>
+      </th>
+    </tr>
+    </thead>
+    <tbody md-body flex>
+    <tr
+      md-row
+      md-select="item"
+      md-select-id="id"
+      md-auto-select
+      ng-repeat="item in menu.list"
+    >
+      <td
+        md-cell
+        ng-repeat="(name, attr) in menu.attrs"
+        ng-click="menu.editField($event, name, attr, item)"
+        ng-class="{'md-placeholder': !item[name] || (item[name] && item[name].length < 1) }"
+        layout-align="center center"
+      >
+        <span ng-if="attr.type && !attr.enum">
+          {{ ::menu.getData(name, attr, item) }}
+        </span>
+        <div
+          ng-if="attr.collection"
+          layout-align="center center"
+          layout="column"
+          data-collection="{{ ::attr.collection }}"
+        >
+          <div
+            ng-if="attr.collection == 'cualidadjugador'"
+            layout="row"
+            layout-align="center center"
+            flex
+          >
+            <div>
+              <p
+                ng-repeat="opt in menu.opts[name]"
+                ng-if="opt.actual"
+              >
+                {{ opt.cualidad.titulo }} <br/>
+                {{ opt.logro + (opt.maximo?' / ' + opt.maximo:'') }}
+              </p>
+            </div>
+            <div layout="column">
+              <md-button
+                ng-click="menu.openCualidades($event, item)"
+                class="md-icon-button md-raised md-primary md-hue-2"
+              >
+                <md-icon md-svg-src="plus" aria-label="Agregar"></md-icon>
+              </md-button>
+              <!--<md-button
+                ng-click="menu.openHistorial($event, item)"
+                class="md-icon-button md-raised md-accent md-hue-1"
+              >
+                <md-icon md-svg-src="history" aria-label="Historial"></md-icon>
+              </md-button>-->
+            </div>
+          </div>
+          <div ng-if="attr.collection != 'cualidadjugador'">
+            <div
+              layout="row"
+              layout-align="center center"
+              flex
+              ng-repeat="subitem in item[name]"
+            >
+              <span>
+                {{ ::(subitem.titulo || subitem.username || menu.collections[subitem].titulo || menu.collections[subitem].username || menu.collections[subitem] || subitem) }}
+              </span>
+              <md-button
+                class="md-warn md-icon-button md-raised"
+              >
+                <md-icon
+                  ng-click="menu.subModel(name, attr, item, subitem)"
+                  md-svg-src="delete"
+                  aria-label="Borrar {{ name }}"
+                ></md-icon>
+              </md-button>
+            </div>
+            <md-button
+              ng-click="menu.openFormModel($event, item, name, attr)"
+              class="md-icon-button md-raised md-primary md-hue-2"
+            >
+              <md-icon md-svg-src="plus" aria-label="Agregar"></md-icon>
+            </md-button>
+          </div>
+        </div>
+        <md-select
+          ng-if="attr.enum || attr.model"
+          ng-click="$event.preventDefault()"
+          ng-model="item[name]"
+          md-on-open="menu.openSelect(name, item)"
+          md-on-close="menu.saveOpts(name, item)"
+          placeholder="{{ ::name }}"
+        >
+          <md-select-header>
+            <input
+              ng-model="menu.searchTerm[name]"
+              type="search"
+              placeholder="Buscar"
+              class="md-header-searchbox _md-text"
+            >
+          </md-select-header>
+          <md-option
+            ng-value="type.id"
+            ng-repeat="type in menu.opts[name] | filter:menu.searchTerm[name]"
+          >
+            {{ ::type.titulo || type.username || type }}
+          </md-option>
+        </md-select>
+        <!--<md-select
+          ng-if="attr.collection"
+          ng-click="$event.preventDefault()"
+          ng-model="item[name]"
+          md-on-open="menu.openSelect(name, item)"
+          md-on-close="menu.saveOpts(name, item)"
+          placeholder="{{ ::name }}"
+          multiple
+        >
+          <md-select-header>
+            <input
+              ng-model="menu.searchTerm[name]"
+              type="search"
+              placeholder="Buscar"
+              class="md-header-searchbox _md-text"
+            >
+          </md-select-header>
+          <md-option
+            ng-value="type.id"
+            ng-repeat="type in menu.opts[name] | filter:menu.searchTerm[name]"
+          >
+            {{ ::type.titulo || type.username || type }}
+          </md-option>
+        </md-select>-->
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</md-table-container>
+
+<md-table-pagination
+  md-limit="menu.search.limit"
+  md-limit-options="[5, 10, 15, 20, 25]"
+  md-page="menu.search.page"
+  md-total="{{ menu.count }}"
+  md-on-paginate="menu.loadList"
+  md-page-select
+  md-label="{page: 'Página:', rowsPerPage: 'Filas por página:', of: 'de'}"
+></md-table-pagination>

@@ -1,0 +1,94 @@
+
+<div layout="row" layout-fill>
+  <md-sidenav
+    class="md-sidenav-left"
+    md-component-id="menu"
+    md-is-locked-open="$mdMedia('gt-sm')"
+    md-disable-backdrop
+    md-whiteframe="4"
+    layout="column"
+  >
+    <md-toolbar class="md-accent md-hue-1">
+      <div class="md-toolbar-tools" layout-align="center center">
+        Menu
+      </div>
+    </md-toolbar>
+    <md-content flex layout="column">
+      <div layout="column" ng-repeat="item in perfil.menu">
+        <md-button ui-sref="perfil.menu({'menu': '{{ ::item.slug }}'})">
+          {{ ::item.titulo }}
+        </md-button>
+      </div>
+    </md-content>
+  </md-sidenav>
+  <md-content flex layout="column" ui-view>
+    <md-toolbar class="md-hue-3">
+      <div class="md-toolbar-tools">
+        <md-button
+          ng-click="perfil.toggleMenu()"
+          ng-show="!$mdMedia('gt-sm')"
+          aria-label="abrir-menu"
+        >
+          Menu
+        </md-button>
+        <span>
+          Bienvenido {{ ::perfil.username }}
+        </span>
+      </div>
+    </md-toolbar>
+    <md-content layout="row" flex layout-wrap>
+      <md-card
+        flex="100"
+        flex-sm="50"
+        flex-gt-sm="30"
+        ng-repeat="item in perfil.list"
+        layout="row"
+        layout-gt-sm="column"
+      >
+        <md-card-title>
+          <md-card-title-text>
+          <span
+            ui-sref="perfil.menu({'menu': '{{ ::item.slug }}'})"
+            class="md-headline"
+          >
+            {{ ::item.titulo }}
+          </span>
+          <span class="md-subhead">
+            {{ ::item.subtitulo }}
+          </span>
+          </md-card-title-text>
+          <md-card-title-media>
+            <div
+              ng-if="item.foto"
+              class="md-media-lg card-media"
+            >
+              <img
+                ng-src="{{::item.foto}}"
+                class="md-avatar"
+                alt="{{::item.titulo}}"
+              />
+            </div>
+          </md-card-title-media>
+        </md-card-title>
+        <md-card-actions layout="column" layout-align="end center">
+          <span>
+            ({{ perfil.count[item.slug] || 0 }})
+          </span>
+          <div layout="row">
+            <md-button
+              aria-label="abrir {{ ::item.titulo }}"
+              ui-sref="perfil.menu({'menu': '{{ ::item.slug }}'})"
+            >
+              Abrir
+            </md-button>
+            <md-button
+              aria-label="nuevo {{ ::item.titulo }}"
+            >
+              Nuevo
+            </md-button>
+          </div>
+        </md-card-actions>
+      </md-card>
+    </md-content>
+  </md-content>
+</div>
