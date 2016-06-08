@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
     logro: {
-      type: 'float'
+      type: 'float',
+      required: true
     },
     maximo: {
       type: 'string'
@@ -19,10 +20,15 @@ module.exports = {
       defaultsTo: true
     },
     cualidad: {
-      model: 'cualidad'
+      model: 'cualidad',
+      required: true
     },
     jugador: {
-      model: 'jugador'
+      model: 'jugador',
+      required: true
+    },
+    entrenador: {
+      model: 'entrenador'
     },
 
     toJSON: function(){

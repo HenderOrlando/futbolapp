@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
     titulo: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     slug: {
       type: 'string'
@@ -23,6 +24,10 @@ module.exports = {
     },
     representantes: {
       collection: 'representante',
+      via: 'tipodocid'
+    },
+    entrenadores: {
+      collection: 'entrenador',
       via: 'tipodocid'
     }
   }

@@ -9,10 +9,12 @@ module.exports = {
 
   attributes: {
     representante: {
-      model: 'representante'
+      model: 'representante',
+      required: true
     },
     jugador: {
-      model: 'jugador'
+      model: 'jugador',
+      required: true
     },
     pariente: {
       type: 'string',

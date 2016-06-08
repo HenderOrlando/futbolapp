@@ -1,7 +1,7 @@
 /**
- * FotoController
+ * EntrenadorController
  *
- * @description :: Server-side logic for managing Fotoes
+ * @description :: Server-side logic for managing entrenadors
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 

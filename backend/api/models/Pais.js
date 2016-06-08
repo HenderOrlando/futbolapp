@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
     titulo: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     slug: {
       type: 'string'

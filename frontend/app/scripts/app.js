@@ -19,11 +19,16 @@ angular
     'ngSanitize',
     'ngMaterial',
     'ngScrollable',
+    'ngFileUpload',
     'md.data.table',
     'angularMoment',
+    'LocalStorageModule',
     'ngMaterialDatePicker'
   ])
-  .config(function ($stateProvider, $urlRouterProvider, $mdIconProvider) {
+  .config(function ($stateProvider, $urlRouterProvider, $mdIconProvider, $httpProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('futbolapp');
+
+    $httpProvider.interceptors.push('httpInterceptor');
 
     $mdIconProvider.defaultIconSet('images/mdi.svg');
 
@@ -50,7 +55,24 @@ angular
       })
     ;
   })
-  .run(function(amMoment){
+  .run(function(amMoment, $rootScope, localStorageService, $state){
+    var storage = localStorageService;
     amMoment.changeLocale('es');
+
+    $rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+      if(toState.name !== 'main' && !storage.get('userid')){
+        e.preventDefault();
+        $state.go('main');
+      }
+      /*if (toState.module === 'private' && !$cookies.Session) {
+        // If logged out and transitioning to a logged in page:
+        e.preventDefault();
+        $state.go('public.login');
+      } else if (toState.module === 'public' && $cookies.Session) {
+        // If logged in and transitioning to a logged out page:
+        e.preventDefault();
+        $state.go('tool.suggestions');
+      };*/
+    });
   })
 ;

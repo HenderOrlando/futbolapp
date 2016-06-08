@@ -8,8 +8,13 @@
 module.exports = {
 
   attributes: {
+    archivos: {
+      collection: 'archivo',
+      via: 'representante'
+    },
     titulo: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     slug: {
       type: 'string'
@@ -17,14 +22,21 @@ module.exports = {
     descripcion: {
       type: 'text'
     },
-    docid: {
-      type: 'int'
-    },
-    pais: {
-      model: 'pais'
+    email: {
+      type: 'email',
+      required: true
     },
     tipodocid: {
-      model: 'tipodocid'
+      model: 'tipodocid',
+      required: true
+    },
+    docid: {
+      type: 'int',
+      required: true
+    },
+    pais: {
+      model: 'pais',
+      required: true
     },
     jugadores: {
       collection: 'jugador',
@@ -34,6 +46,17 @@ module.exports = {
     jugadoresrepresentante: {
       collection: 'representantejugador',
       via: 'representante'
+    },
+    avatar: {
+      model: 'archivo'
+    },
+
+    toJSON: function(){
+      var obj = this.toObject();
+      if(obj.avatar && obj.avatar.src){
+        obj.avatar = obj.avatar.src;
+      }
+      return obj;
     }
   }
 };

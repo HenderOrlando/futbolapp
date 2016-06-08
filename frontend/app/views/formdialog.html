@@ -4,16 +4,85 @@
   flex-gt-xs="70"
   flex-xs="90"
 >
-  <form ng-submit="form.submit()">
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h2>{{ ::form.titulo }}</h2>
-        <span flex></span>
-        <md-button class="md-icon-button" ng-click="form.cancel()">
-          <md-icon md-svg-src="close" aria-label="Close dialog"></md-icon>
-        </md-button>
-      </div>
-    </md-toolbar>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>{{ ::form.titulo }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="form.cancel()">
+        <md-icon md-svg-src="close" aria-label="Close dialog"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <div ng-if="!form.addNew && form.name && form.attr && form.item">
+    <md-dialog-content>
+      <md-contact-chips
+        ng-model="form.list"
+        md-contacts="form.querySearch($query)"
+        md-contact-name="titulo"
+        md-contact-image="avatar"
+        md-contact-email="email"
+        md-require-match="true"
+        md-highlight-flags="i"
+        filter-selected="form.filterSelected"
+        placeholder="Seleccione"
+      >
+      </md-contact-chips>
+      <md-content layout="column" flex>
+        <md-subheader class="md-no-sticky">
+          {{ ::form.name }}
+        </md-subheader>
+        <md-list layout="row" layout-wrap>
+          <md-list-item
+            class="md-2-line contact-item"
+            ng-repeat="(index, item) in form.allList"
+          >
+            <md-button
+              ng-click="form.addToList(item)"
+              ng-class="{'md-raised': form.hasList(item)}"
+            >
+              <img
+                ng-if="item.avatar"
+                ng-src="{{ ::item.avatar }}"
+                class="md-avatar"
+                alt="{{ ::item.titulo }}"
+              />
+              <div class="md-list-item-text compact">
+                <h3>{{ ::item.titulo}}</h3>
+                <p>{{ ::item.email }}</p>
+              </div>
+            </md-button>
+          </md-list-item>
+          <!--<md-list-item
+            class="md-2-line contact-item selected"
+            ng-repeat="(index, item) in form.list"
+          >
+            <img
+              ng-if="item.archivo"
+              ng-src="{{ ::item.archivo }}"
+              class="md-avatar"
+              alt="{{ ::item.titulo }}"
+            />
+            <div class="md-list-item-text compact">
+              <h3>{{ ::item.titulo }}</h3>
+              <p>{{ ::item.email }}</p>
+            </div>
+          </md-list-item>
+        </md-list>-->
+      </md-content>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="end center">
+      <md-button ng-click="form.addNew = true">
+        Agregar Nuevo
+      </md-button>
+      <md-button ng-click="form.saveList()">
+        Guardar
+      </md-button>
+    </md-dialog-actions>
+  </div>
+  <form
+    ng-if="form.addNew || (!form.name || !form.attr || !form.item)"
+    ng-submit="form.submit()"
+  >
     <md-dialog-content class="md-padding">
       <div
         ng-repeat="(name, attr) in form.attrs"
@@ -24,6 +93,8 @@
           ng-model="form.obj[name]"
           md-placeholder="{{ ::name }}"
           md-max-date="form.today"
+          layout-align="center center"
+          layout="row"
           flex
         ></md-datepicker>
         <md-input-container
@@ -80,6 +151,12 @@
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-align="end center">
+      <md-button
+        ng-if="form.name && form.attr && form.item"
+        ng-click="form.addNew = false"
+      >
+        Seleccionar
+      </md-button>
       <md-button type="submit">
         Guardar
       </md-button>

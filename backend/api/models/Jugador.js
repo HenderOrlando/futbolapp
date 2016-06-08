@@ -8,8 +8,13 @@
 module.exports = {
 
   attributes: {
+    archivos: {
+      collection: 'archivo',
+      via: 'jugador'
+    },
     titulo: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     slug: {
       type: 'string'
@@ -17,8 +22,17 @@ module.exports = {
     descripcion: {
       type: 'text'
     },
+    email: {
+      type: 'email',
+      required: true
+    },
+    tipodocid: {
+      model: 'tipodocid',
+      required: true
+    },
     docid: {
-      type: 'int'
+      type: 'int',
+      required: true
     },
     sexo: {
       type: 'string',
@@ -31,16 +45,19 @@ module.exports = {
       type: 'date'
     },
     municipio: {
-      model: 'municipio'
+      model: 'municipio',
+      required: true
     },
     disciplina: {
-      model: 'disciplina'
-    },
-    tipodocid: {
-      model: 'tipodocid'
+      model: 'disciplina',
+      required: true
     },
     posicion: {
-      model: 'posicion'
+      model: 'posicion',
+      required: true
+    },
+    entrenador: {
+      model: 'entrenador'
     },
     representantes: {
       collection: 'representante',
@@ -59,6 +76,18 @@ module.exports = {
     cualidadesjugador: {
       collection: 'cualidadjugador',
       via: 'jugador'
+    },
+    avatar: {
+      model: 'archivo'
+    },
+    
+    toJSON: function(){
+      var obj = this.toObject();
+
+      if(obj.avatar && obj.avatar.src){
+        obj.avatar = obj.avatar.src;
+      }
+      return obj;
     }
   }
 };

@@ -25,16 +25,22 @@ angular.module('futbolappApp')
           descripcion: 'Administra los Jugadores'
         },
         {
-          orm: 'cualidad',
-          slug: 'cualidades',
-          titulo: 'Cualidades',
-          descripcion: 'Administra las Cualidades'
+          orm: 'entrenador',
+          slug: 'entrenadores',
+          titulo: 'Entrenadores',
+          descripcion: 'Administra los Entrenadores'
         },
         {
           orm: 'representante',
           slug: 'representantes',
           titulo: 'Representantes',
           descripcion: 'Administra los Representantes'
+        },
+        {
+          orm: 'cualidad',
+          slug: 'cualidades',
+          titulo: 'Cualidades',
+          descripcion: 'Administra las Cualidades'
         },
         {
           orm: 'disciplina',

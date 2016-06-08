@@ -9,13 +9,15 @@ module.exports = {
 
   attributes: {
     titulo: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     slug: {
       type: 'string'
     },
     pais: {
-      model: 'pais'
+      model: 'pais',
+      required: true
     },
     municipios: {
       collection: 'municipio',

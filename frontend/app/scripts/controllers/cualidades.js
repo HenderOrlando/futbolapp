@@ -17,7 +17,7 @@ angular.module('futbolappApp')
       CualidadJugador = new Connect('cualidadjugador'),
       w = angular.element($window)
     ;
-    
+
     /*vm.window = {
       height: w.height(),
       width: w.width()
@@ -81,26 +81,43 @@ angular.module('futbolappApp')
     });
 
     function submit(cualidad){
-      var data = angular.merge({
-        cualidad: cualidad.id,
-        jugador: jugador.id
-      }, vm.cualidadesjugador[cualidad.id]);
+      var data = {};
+      angular.forEach(vm.cualidadesjugador[cualidad.id], function(val, key){
+        data[key] = val.id || val;
+      });
+
+      data.cualidad = cualidad.id;
+      data.jugador = jugador.id;
+
       delete data.createdAt;
       delete data.updatedAt;
       delete data.id;
-
+      //console.log(data);
       CualidadJugador.create(data).then(function(rta){
         //console.log(rta)
         if(vm.cualidadesjugador[cualidad.id].id){
-          vm.cualidadesjugador[cualidad.id].actual = false;
-          delete vm.cualidadesjugador[cualidad.id].valor;
-          CualidadJugador.update(vm.cualidadesjugador[cualidad.id]).then(function(rta1){
+          //vm.cualidadesjugador[cualidad.id].actual = false;
+          //delete vm.cualidadesjugador[cualidad.id].valor;
+          var data2 = {
+            actual: false,
+            id: vm.cualidadesjugador[cualidad.id].id
+          };
+          /*angular.forEach(vm.cualidadesjugador[cualidad.id], function(val, key){
+            if(key !== 'createdAt' && key !== 'updatedAt' && key !== 'logro' && key !== 'maximo'){
+              data2[key] = val.id || val;
+            }
+          });*/
+          //console.log(data2);
+          CualidadJugador.update(data2).then(function(rta1){
             //console.log(rta1)
             vm.cualidadesjugador[cualidad.id] = rta;
             vm.allcualidadesjugador[cualidad.id].unshift(rta);
           });
         }else{
           vm.cualidadesjugador[cualidad.id] = rta;
+          if(!vm.allcualidadesjugador[cualidad.id]){
+            vm.allcualidadesjugador[cualidad.id] = [];
+          }
           vm.allcualidadesjugador[cualidad.id].unshift(rta);
         }
         //console.log(rta)
@@ -108,7 +125,12 @@ angular.module('futbolappApp')
     }
 
     function update(cualidad){
-      CualidadJugador.update(vm.cualidadesjugador[cualidad.id]).then(function(rta){
+      //console.log(vm.cualidadesjugador[cualidad.id])
+      var data = {};
+      angular.forEach(vm.cualidadesjugador[cualidad.id], function(val, key){
+        data[key] = val.id || val;
+      });
+      CualidadJugador.update(data).then(function(rta){
         //console.log(rta)
         var cualidadjugadoractual = vm.allcualidadesjugador[cualidad.id].filter(function(item){
           return item.actual;

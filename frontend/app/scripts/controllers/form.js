@@ -20,16 +20,26 @@ angular.module('futbolappApp')
       este = vars.este || false,
       Connection = new Connect()
     ;
-    //console.log(este)
 
     vm.nextForm = !!este;
     vm.today = new Date();
     vm.titulo = vars.titulo;
+    vm.name = vars.name;
     vm.attr = vars.attr;
+    vm.item = vars.item;
     vm.attrs = angular.merge({}, vars.attrs);
     vm.modelname = vars.modelname;
     vm.obj = vars.obj || {};
     vm.opts = {};
+
+    vm.allList = [];
+    vm.list = [];
+    vm.filterSelected = true;
+    vm.hasList = hasList;
+    vm.saveList = saveList;
+    vm.addToList = addToList;
+    vm.querySearch = querySearch;
+    loadList();
 
     if(vars.attr && vars.attr.via){
       vm.obj[vars.attr.via] = vars.item.id;
@@ -138,6 +148,63 @@ angular.module('futbolappApp')
             // Cancelado
           });
       });
+    }
+
+    function querySearch (criteria) {
+      return vm.allList.filter(createFilterFor(criteria)) || [];
+    }
+
+    /**
+     * Create filter function for a query string
+     */
+    function createFilterFor(query) {
+      var lowercaseQuery = angular.lowercase(query);
+      return function filterFn(item) {
+        return item.titulo.toLowerCase().indexOf(lowercaseQuery) > -1;
+      };
+    }
+    function loadList() {
+      Model = new Connect(vm.modelname);
+      return Model.find({}).then(function(res){
+        vm.allList = res;
+        if(vm.item && vm.name && vm.item[vm.name] && vm.item[vm.name].length > 0){
+          vm.list = res.filter(function(item){
+            var rta = vm.item[vm.name].filter(function(ele){
+              return ele === item.id;
+            });
+            return rta.length > 0;
+          });
+        }
+      });
+    }
+
+    function hasSaveList(){
+      return vm.list.filter(function(item){
+          if(vm.item[vm.name] && vm.item[vm.name].length > 0){
+            var rta = vm.item[vm.name].filter(function(ele){
+              return ele !== item.id;
+            });
+            return rta.length > 0;
+          }
+          return true;
+        }).length === 0;
+    }
+
+    function hasList(item){
+      return !!vm.list.filter(function(ele){
+        return ele.id === item.id;
+      })[0];
+    }
+
+    function addToList(item){
+      vm.list.push(item);
+    }
+
+    function saveList(){
+      /*var ids = vm.list.map(function(item){
+        return item.id;
+      });*/
+      $mdDialog.hide(vm.list);
     }
 
   });

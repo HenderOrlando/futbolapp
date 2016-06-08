@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
     titulo: {
-      type: 'string'
+      type: 'string',
+      required: true
     },
     slug: {
       type: 'string'
@@ -18,7 +19,8 @@ module.exports = {
       type: 'text'
     },
     disciplina: {
-      model: 'disciplina'
+      model: 'disciplina',
+      required: true
     },
     jugadores: {
       collection: 'jugador',

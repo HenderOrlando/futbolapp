@@ -1,0 +1,92 @@
+<md-dialog
+  aria-label="{{ ::archivos.titulo }}"
+  flex-gt-md="50"
+  flex-gt-xs="70"
+  flex-xs="90"
+>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>{{ ::archivos.titulo }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="archivos.cancel()">
+        <md-icon md-svg-src="close" aria-label="Close dialog"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content
+    class="md-padding"
+    ng-model="archivos.file"
+    ngf-drop="archivos.addToUpload($files)"
+    ngf-drag-over-class="'md-whiteframe-2dp'"
+    ngf-pattern="'image/*'"
+    ngf-accept="'image/*'"
+    ngf-keep="'distinct'"
+  >
+    <md-grid-list
+      md-cols-xs="1"
+      md-cols-sm="2"
+      md-cols-md="4"
+      md-cols-gt-md="6"
+      md-row-height-gt-md="1:1"
+      md-row-height="2:2"
+      md-gutter="12px"
+      md-gutter-gt-sm="8px"
+    >
+      <md-grid-tile ng-repeat="file in archivos.file">
+        <img ngf-thumbnail="file" class="md-full-height"/>
+        <md-grid-tile-footer>
+          <h3>{{ ::file.name }}</h3>
+        </md-grid-tile-footer>
+      </md-grid-tile>
+
+      <md-grid-tile
+        ng-repeat="file in archivos.list"
+        ng-click="archivos.addAvatar(file)"
+        ng-class="{'md-whiteframe-6dp': file.avatar}"
+      >
+        <img ng-src="{{ file.src }}"/>
+        <md-grid-tile-footer layout="row">
+          <md-button
+            ng-click="archivos.deleteFile($event, file)"
+            class="md-warn md-raised md-icon-button"
+          >
+            <md-icon md-svg-src="delete" aria-label="delete file"></md-icon>
+          </md-button>
+          <span>{{ ::file.titulo }}</span>
+        </md-grid-tile-footer>
+      </md-grid-tile>
+    </md-grid-list>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-align="end center">
+    <div flex>
+      <md-button
+        class="md-accent md-hue-1"
+        ng-click="archivos.uploadFiles()"
+        ng-disabled="archivos.file.length < 1"
+      >
+        {{ archivos.file.length }} por subir
+      </md-button>
+      /
+      <span>
+        {{ archivos.list.length }} subidos
+      </span>
+    </div>
+    <md-button
+      ng-model="archivos.file"
+      ngf-select="archivos.addToUpload($files)"
+      ngf-pattern="'image/*'"
+      ngf-accept="'image/*'"
+      class="md-accent md-raised"
+      ngf-keep="'distinct'"
+    >
+      Agregar
+    </md-button>
+
+    <md-button
+      ng-click="archivos.uploadFiles()"
+      class="md-primary md-raised"
+    >
+      Subir
+    </md-button>
+  </md-dialog-actions>
+</md-dialog>

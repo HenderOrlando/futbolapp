@@ -14,11 +14,42 @@ angular.module('futbolappApp')
       model = findMenu($stateParams.menu),
       Model = null,
       list = {},
-      attrjugador = [
-        //'representantes',
-        'representantesjugador',
-        'cualidades',
-        //'cualidadesjugador'
+      attrsnoadd = [
+
+      ],
+      attrscount = [
+        'municipio.jugadores',
+
+        'departamento.municipios',
+
+        'pais.departamentos',
+        'pais.representantes',
+
+        'tipodocid.jugadores',
+        'tipodocid.representantes',
+        'tipodocid.entrenadores',
+
+        'posicion.jugadores',
+
+        'disciplina.jugadores',
+      ],
+      attrshidden = [
+        //'jugador.representantes',
+        'jugador.representantesjugador',
+        'jugador.cualidades',
+        'jugador.avatar',
+        //'jugador.cualidadesjugador',
+
+        //'entrenador.jugadores'
+        'entrenador.avatar',
+
+        'cualidad.jugadores',
+        'cualidad.cualidadjugadores',
+
+        'representante.jugadoresrepresentante',
+        'representante.avatar',
+
+        'disciplina.posiciones',
       ]
     ;
 
@@ -47,16 +78,19 @@ angular.module('futbolappApp')
       vm.subModel = subModel;
 
       vm.openCualidades = openCualidades;
+      vm.openArchivos = openArchivos;
       vm.openHistory = openHistory;
 
       vm.isNumber = tools.isNumber;
 
+      vm.showHasCount = function (name){
+        return attrscount.indexOf(model.orm + '.' + name) > -1;
+      };
+
       Model.attrs().then(function(attrs){
         //console.log(attrs);
-        if(model.orm === 'jugador'){
-          for(var h = 0; h < attrjugador.length; h++){
-            delete attrs[attrjugador[h]];
-          }
+        for(var h = 0; h < attrshidden.length; h++){
+          delete attrs[attrshidden[h].replace(model.orm + '.','')];
         }
         vm.attrs = attrs;
         //console.log(attrs)
@@ -120,16 +154,29 @@ angular.module('futbolappApp')
       criteria.limit = limit;
       criteria.skip = (limit * page) - limit;
       //criteria.populate = false;
-      criteria.populate = 'representantes,cualidadesjugador';
+      var populates = [
+        'representantes',
+        'cualidadesjugador',
+        'jugadores',
+        'municipios',
+        'departamentos',
+        'avatar',
+      ];
+      criteria.populate = populates.join(',');
       if(query && query.length > 0){
         criteria.where = {};
-        angular.forEach(vm.attrs, function(attr, name){
+        if(vm.attrs.titulo){
+          criteria.where.titulo = {
+            contains: query
+          };
+        }
+        /*angular.forEach(vm.attrs, function(attr, name){
           if(attr.type && (attr.type === 'string' || attr.type === 'text')){
             criteria.where[name] = {
               contains: query
             }
           }
-        });
+        });*/
         /*if(attrs && attr.length > 0){
           for(var h = 0; h < attrs.length; h++){
             criteria.where[attrs[h]]
@@ -148,6 +195,7 @@ angular.module('futbolappApp')
         criteria.limit = -1;
         criteria.skip = 0;
         //criteria.populate = 'representantes,representantesjugador,cualidades,cualidadesjugador';
+        //console.log(rta)
         vm.list = rta;
         list = {};
         Model.find(criteria).then(function(res){
@@ -180,6 +228,12 @@ angular.module('futbolappApp')
         }else{
           data = '---';
         }
+      }else if(attr.type === 'date'){
+        data = moment(data).format('DD [de] MMMM [de] YYYY');
+      }else if(attr.type === 'time'){
+        data = moment(data).format('HH:mm:ss');
+      }else if(attr.type === 'datetime'){
+
       }
       return data;
     }
@@ -218,15 +272,19 @@ angular.module('futbolappApp')
         var
           tipo = (attr.type === 'int' || attr.type === 'integer' || attr.type === 'float')?'number':(attr.type === 'string'?'text':attr.type),
           config = {
+            title: 'Editar ' + name + (name === 'titulo'?'/nombre':''),
+            cancel: 'Cancelar',
+            ok: 'Guardar',
             // messages: {
             //   test: 'I don\'t like tests!'
             // },
             type: tipo,
-            modelValue: attr.type === 'float'?parseFloat(item[name]):(attr.type === 'int' || attr.type === 'integer'?parseInt(item[name]):item[name]),
+            modelValue: attr.type === 'float'?parseFloat(item[name]):(attr.type === 'int' || attr.type === 'integer'?parseInt(item[name]):(attr.type === 'date')?new Date(item[name]):item[name]),
             placeholder: name,
             save: function (input) {
-              item[name] = input.$modelValue;
               // guardar en BD
+              item[name] = input.$modelValue;
+              Model.update(item);
             },
             targetEvent: $event
           }
@@ -244,7 +302,7 @@ angular.module('futbolappApp')
           };
         }
 
-        var promise = $mdEditDialog.small(config);
+        var promise = $mdEditDialog.large(config);
 
         /*promise.then(function (ctrl) {
           var input = ctrl.getInput();
@@ -261,8 +319,9 @@ angular.module('futbolappApp')
         $event.preventDefault();
         $event.stopPropagation();
       }
+
       var
-        modelname = attr.collection + model.orm,
+        modelname = attr.collection,
         ConnectionModel = new Connect(modelname),
         config = {
           controller: 'FormCtrl',
@@ -300,6 +359,19 @@ angular.module('futbolappApp')
                   vm.collections[ele.id] = ele;
                   item[name].push(ele.id);
                 }
+              });
+            }else if(angular.isArray(rta)){
+              var ids = rta.map(function(item){
+                return item.id;
+              });
+              rta.filter(function(ele){
+                Model.add({
+                  id: item.id,
+                  association: name,
+                  fk: ele.id
+                }).then(function(elem){
+                  item[name].push(ele);
+                });
               });
             }
           }, function() {
@@ -360,6 +432,7 @@ angular.module('futbolappApp')
               /*if(name === 'cualidadesjugador'){
                 console.log(list)
               }*/
+              //console.log(list)
               vm.opts[name] = list;
             });
           }
@@ -380,9 +453,9 @@ angular.module('futbolappApp')
       ;
 
       if(tmp[name] !== item[name]){
-        angular.forEach(update, function(el, name){
-          if(name.indexOf('$') > -1){
-            delete update[name];
+        angular.forEach(update, function(el, nameattr){
+          if(nameattr.indexOf('$') > -1 || (vm.attrs[nameattr] && name !== nameattr && !vm.attrs[nameattr].type)){
+            delete update[nameattr];
           }
         });
 
@@ -429,6 +502,30 @@ angular.module('futbolappApp')
       };
       //$mdBottomSheet.show(config);
       $mdDialog.show(config);
+    }
+
+    function openArchivos($event, item){
+      if($event){
+        $event.preventDefault();
+        $event.stopPropagation();
+      }
+
+      var config = {
+        controller: 'ArchivosCtrl',
+        controllerAs: 'archivos',
+        templateUrl: 'views/archivosdialog.html',
+        parent: angular.element(document.body),
+        targetEvent: $event,
+        locals: {
+          item: item,
+          modelname: model.orm
+        },
+        fullscreen: !$mdMedia('gt-sm')
+      };
+      //$mdBottomSheet.show(config);
+      $mdDialog.show(config).then(function(){
+        loadList();
+      });
     }
 
     function openHistory($event, jugador){

@@ -1,7 +1,42 @@
-<div>
-  <md-button ui-sref="perfil({username: 'hender'})">
-    Perfil Hender
-  </md-button>
+
+<div layout="column" flex role="main" layout-fill ui-view>
+  <md-content layout="vertical" flex>
+    <div layout="row" layout-align="center center" layout-fill>
+      <form
+        ng-submit="main.login()"
+        layout="column"
+        flex="90"
+        flex-xs="80"
+        flex-sm="60"
+        flex-md="50"
+        flex-gt-md="30"
+        layout-padding
+        md-whiteframe="2dp"
+      >
+        <div layout-align="center center" layout="row">
+          <img src="images/logo.png" />
+        </div>
+        <md-input-container>
+          <label>Username</label>
+          <input ng-model="main.user.username">
+        </md-input-container>
+        <md-input-container>
+          <label>Password</label>
+          <input ng-model="main.user.password" type="password">
+        </md-input-container>
+        <div layout="row" layout-sm="column" layout-margin>
+          <div layout="column" flex>
+            <md-button
+              aria-label="login"
+              class="md-raised md-primary"
+              type="submit"
+            >Login</md-button>
+          </div>
+          <!--<md-button class="md-raised md-primary" flex>Register</md-button>-->
+        </div>
+      </form>
+    </div>
+  </md-content>
 </div>
 <!--<div class="jumbotron">
   <h1>'Allo, 'Allo!</h1>

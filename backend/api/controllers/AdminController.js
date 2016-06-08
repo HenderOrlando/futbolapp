@@ -17,11 +17,19 @@ module.exports = {
       delete attrs.slug;
       delete attrs.createdAt;
       delete attrs.updatedAt;
-      
+
       models[key] = attrs;
     });
 
     res.json(models);
+  },
+  login: function(req, res){
+    var
+      params = req.allParams(),
+      email = params.email,
+      password = params.password
+    ;
+    
   }
 };
 

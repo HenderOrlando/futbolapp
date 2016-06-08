@@ -26,14 +26,21 @@
       <div class="md-toolbar-tools">
         <md-button
           ng-click="perfil.toggleMenu()"
-          ng-show="!$mdMedia('gt-sm')"
+          ng-show="!gtsm"
           aria-label="abrir-menu"
         >
           Menu
         </md-button>
-        <span>
+        <span flex>
           Bienvenido {{ ::perfil.username }}
         </span>
+        <md-button
+          ng-click="perfil.logout()"
+          aria-label="salir"
+          class="md-raised md-warn md-icon-button"
+        >
+          <md-icon md-svg-src="logout" aria-label="logout"></md-icon>
+        </md-button>
       </div>
     </md-toolbar>
     <md-content layout="row" flex layout-wrap>
@@ -83,6 +90,7 @@
             </md-button>
             <md-button
               aria-label="nuevo {{ ::item.titulo }}"
+              ng-click="perfil.openForm($event, item)"
             >
               Nuevo
             </md-button>
