@@ -32,6 +32,9 @@ module.exports.policies = {
   AuthController: {
     login: true,
     logout: true
+  },
+  ArchivoController: {
+    show: true
   }
 
   /***************************************************************************

@@ -53,8 +53,8 @@ module.exports = {
 
     toJSON: function(){
       var obj = this.toObject();
-      if(obj.avatar && obj.avatar.src){
-        obj.avatar = obj.avatar.src;
+      if(obj.avatar && obj.avatar.filename){
+        obj.avatar = obj.avatar.filename;
       }
       return obj;
     }

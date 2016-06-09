@@ -14,6 +14,10 @@ var bcrypt = require('bcrypt');
 module.exports = {
 
   attributes: {
+    archivos: {
+      collection: 'archivo',
+      via: 'user'
+    },
     username: {
       type: 'string',
       required: true,
@@ -23,9 +27,15 @@ module.exports = {
       type: 'string',
       required: true
     },
+    avatar: {
+      model: 'archivo'
+    },
     toJSON: function() {
       var obj = this.toObject();
       delete obj.password;
+      if(obj.avatar && obj.avatar.filename){
+        obj.avatar = obj.avatar.filename;
+      }
       return obj;
     }
   },

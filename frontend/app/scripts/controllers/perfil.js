@@ -15,7 +15,9 @@ angular.module('futbolappApp')
       User = new Connect('user')
       //pais = new Connect('pais')
     ;
-    
+
+    $rootScope.getUrlImg = User.getUrlImg;
+
     $rootScope.$watch(function(){
       return $mdMedia('gt-sm');
     }, function (newval){

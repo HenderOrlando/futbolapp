@@ -44,7 +44,9 @@
         ng-click="archivos.addAvatar(file)"
         ng-class="{'md-whiteframe-6dp': file.avatar}"
       >
-        <img ng-src="{{ file.src }}"/>
+        <img
+          ng-src="{{ archivos.getUrlImg(file.filename) }}"
+        />
         <md-grid-tile-footer layout="row">
           <md-button
             ng-click="archivos.deleteFile($event, file)"

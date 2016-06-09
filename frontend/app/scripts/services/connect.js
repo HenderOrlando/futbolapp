@@ -8,7 +8,7 @@
  * Service in the futbolappApp.
  */
 angular.module('futbolappApp')
-  .service('Connect', function ($http, $q, $location, Upload) {
+  .service('Connect', function ($http, $q, $location, Upload, $rootScope) {
     return function(model){
       var
         modelname = null,
@@ -16,6 +16,7 @@ angular.module('futbolappApp')
         urlbase = 'http://' + $location.host() + ':1340/',
         url = urlbase
       ;
+      
       if(model){
         modelname = model;
         url = getUrl(model);
@@ -32,6 +33,7 @@ angular.module('futbolappApp')
         upload: upload,
         login: login,
         logout: logout,
+        getUrlImg: getUrlImg
       };
 
       function add(model, criteria){
@@ -205,7 +207,17 @@ angular.module('futbolappApp')
           return res.data;
         });
       }
-
+      
+      function getUrlImg (filename){
+        var url = urlbase + 'archivo/show';
+        if(filename.indexOf('.') > -1){
+          url += '?name=' + filename;
+        }else{
+          url += '?id=' + filename;
+        }
+        //console.log(url)
+        return url;
+      }
     };
 
   });

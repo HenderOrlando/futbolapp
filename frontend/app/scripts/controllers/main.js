@@ -8,7 +8,7 @@
  * Controller of the futbolappApp
  */
 angular.module('futbolappApp')
-  .controller('MainCtrl', function (Connect, localStorageService, $state) {
+  .controller('MainCtrl', function (Connect, localStorageService, $state, $rootScope) {
     var
       vm = this,
       storage = localStorageService,
@@ -17,9 +17,11 @@ angular.module('futbolappApp')
 
     vm.user = {
       username: '',
-      password: '',
+      password: ''
     };
-
+    
+    $rootScope.getUrlImg = User.getUrlImg;
+    
     if(storage.get('userid')){
       User.find({
         id: storage.get('userid')

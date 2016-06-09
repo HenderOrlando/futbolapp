@@ -5,7 +5,25 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
-var fs = require('fs');
+var
+  Ftp = require('ftp'),
+  dataconnect = {
+    host: 'futbolitocolpas.com',
+    user: 'futbolapp@admin.futbolitocolpas.com',
+    password: 'fe23AfnN,oqB'
+    /*,debug: function(ele){
+     sails.log.debug(ele)
+     }*/
+  },
+  ftp = function (cb){
+    var ftp = new Ftp();
+    ftp.on('ready', function(){
+      cb(ftp);
+    });
+    ftp.connect(dataconnect);
+    return ftp;
+  }
+;
 
 module.exports = {
 
@@ -17,12 +35,20 @@ module.exports = {
     slug: {
       type: 'string'
     },
+    filename: {
+      type: 'string',
+      required: true
+    },
     src: {
       type: 'string',
       required: true
     },
-    fd: {
+    type: {
       type: 'string',
+      required: true
+    },
+    size: {
+      type: 'int',
       required: true
     },
     jugador: {
@@ -33,6 +59,9 @@ module.exports = {
     },
     representante: {
       model: 'representante'
+    },
+    user: {
+      model: 'user'
     },
 
     toJSON: function(){
@@ -47,12 +76,20 @@ module.exports = {
       if(err){
         return cb(err);
       }
-      fs.unlink(archivo.fd, function(err){
+      ftp(function(ftp_){
+        ftp_.delete(archivo.src,function(err){
+          if(err){
+            return cb(err);
+          }
+          cb();
+        })
+      });
+      /*fs.unlink(archivo.fd, function(err){
         if(err){
           return cb(err);
         }
         cb();
-      });
+      });*/
     });
   }
 };

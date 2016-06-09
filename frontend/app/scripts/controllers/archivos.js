@@ -8,7 +8,7 @@
  * Controller of the futbolappApp
  */
 angular.module('futbolappApp')
-  .controller('ArchivosCtrl', function ($mdDialog, Connect, item, modelname) {
+  .controller('ArchivosCtrl', function ($mdDialog, Connect, item, modelname, $rootScope) {
     var
       vm = this,
       Model = new Connect('archivo'),
@@ -17,6 +17,8 @@ angular.module('futbolappApp')
     if(!item || !item.id){
       $mdDialog.hide();
     }
+
+    vm.getUrlImg = Model.getUrlImg;
 
     vm.list = [];
     vm.file = [];

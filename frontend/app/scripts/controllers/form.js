@@ -21,6 +21,8 @@ angular.module('futbolappApp')
       Connection = new Connect()
     ;
 
+    vm.getUrlImg = Connection.getUrlImg;
+
     vm.nextForm = !!este;
     vm.today = new Date();
     vm.titulo = vars.titulo;
@@ -166,9 +168,18 @@ angular.module('futbolappApp')
     function loadList() {
       Model = new Connect(vm.modelname);
       return Model.find({}).then(function(res){
+        res = res.map(function(item){
+          if(item.avatar){
+            item.avatarchip = Model.getUrlImg(item.avatar);
+          }
+          return item;
+        });
         vm.allList = res;
         if(vm.item && vm.name && vm.item[vm.name] && vm.item[vm.name].length > 0){
           vm.list = res.filter(function(item){
+            /*if(item.avatar){
+              item.avatar = Model.getUrlImg(item.avatar);
+            }*/
             var rta = vm.item[vm.name].filter(function(ele){
               return ele === item.id;
             });
