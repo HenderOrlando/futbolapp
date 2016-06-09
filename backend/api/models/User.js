@@ -59,7 +59,7 @@ module.exports = {
       if(err){
         return cb(err);
       }
-      if(usr.password !== user.password){
+      if(!!user.password && usr.password !== user.password){
         bcrypt.genSalt(10, function(err, salt) {
           bcrypt.hash(user.password, salt, function(err, hash) {
             if (err) {
@@ -71,6 +71,8 @@ module.exports = {
             }
           });
         });
+      }else{
+        cb();
       }
     });
   }
