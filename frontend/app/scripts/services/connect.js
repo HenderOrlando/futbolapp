@@ -16,7 +16,7 @@ angular.module('futbolappApp')
         urlbase = 'http://' + $location.host() + ':1340/',
         url = urlbase
       ;
-      
+
       if(model){
         modelname = model;
         url = getUrl(model);
@@ -207,16 +207,19 @@ angular.module('futbolappApp')
           return res.data;
         });
       }
-      
+
       function getUrlImg (filename){
-        var url = urlbase + 'archivo/show';
-        if(filename.indexOf('.') > -1){
-          url += '?name=' + filename;
-        }else{
-          url += '?id=' + filename;
+        if(filename){
+          var url = urlbase + 'archivo/show';
+          if(filename.indexOf('.') > -1){
+            url += '?name=' + filename;
+          }else{
+            url += '?id=' + filename;
+          }
+          //console.error(url)
+          return url;
         }
-        //console.log(url)
-        return url;
+        return filename;
       }
     };
 
