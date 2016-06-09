@@ -15,15 +15,7 @@ angular.module('futbolappApp')
       User = new Connect('user')
       //pais = new Connect('pais')
     ;
-    /*pais.create({titulo: 'Colombia', 'slug': 'colombia'}).then(function(rta){
-      console.log(rta)
-    });*/
-    /*pais.find({}).then(function(rta){
-      console.log(rta)
-    });
-    pais.attrs().then(function(rta){
-      console.log(rta)
-    });*/
+    
     $rootScope.$watch(function(){
       return $mdMedia('gt-sm');
     }, function (newval){

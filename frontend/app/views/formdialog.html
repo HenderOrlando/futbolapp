@@ -114,6 +114,7 @@
           </label>
           <input
             ng-if="attr.type && !attr.enum"
+            type="{{ ::(name === 'password'?name:(attr.type === 'int' || attr.type === 'integer' || attr.type === 'float')?'number':(attr.type === 'string'?'text':attr.type)) }}"
             ng-model="form.obj[name]"
             flex
             ng-disabled="name === attr.via"

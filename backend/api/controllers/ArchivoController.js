@@ -5,13 +5,13 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 var
-  PromiseFtp = require('promise-ftp'),
-  ftp = new PromiseFtp(),
+  JSFtp = require('jsftp'),
   dataconnect = {
-    host: 'http://futbolitocolpas.com',
+    host: 'futbolitocolpas.com',
     user: 'futbolapp@admin.futbolitocolpas.com',
-    password: 'fe23AfnN,oqB'
-  }
+    pass: 'fe23AfnN,oqB'
+  },
+  ftp = new JSFtp(dataconnect)
 ;
 
 module.exports = {
@@ -33,66 +33,63 @@ module.exports = {
       if (uploadedFiles.length === 0){
         return res.badRequest('No file was uploaded');
       }
+      var urifile = uploadedFiles[0].fd.split('/');
 
-      /*ftp.connect(dataconnect).then(function(msg){
-        sails.log.info(msg);
-        return ftp.put(uploadedFiles[0].fd);
-      })/!*.then(function(putfile){
-        return ftp.get()
-      })*!/.then(function(getfile){
-        return ftp.end();
-      }).catch(function(e){
-        sails.log.error(e);
-      });*/
+      //sails.log.error('avatars/' + urifile[urifile.length-1]);
 
-      var
-        urifile = uploadedFiles[0].fd.split('/'),
-        data = {
-          titulo: uploadedFiles[0].filename,
-          src: sails.getBaseUrl() + uri.replace('assets/','/') + '/' + urifile[urifile.length-1],
-          fd: uploadedFiles[0].fd
-        },
-        params = req.allParams()
-      ;
-      if(params.modelname && params.id){
-        data[params.modelname] = params.id;
-        var Model = sails.models[params.modelname];
-        return Model.findOne({
-          where: {
-            id: params.id
+      ftp.put(uploadedFiles[0].fd, 'avatars/' + urifile[urifile.length-1], function(error){
+        if(error){
+          return res.negotiate(error);
+        }
+        var
+          data = {
+            titulo: uploadedFiles[0].filename,
+            //src: sails.getBaseUrl() + uri.replace('assets/','/') + '/' + urifile[urifile.length-1],
+            src: sails.config.getUrlBase() + uri.replace('assets/','/') + '/' + urifile[urifile.length-1],
+            fd: uploadedFiles[0].fd
           },
-          populate: false
-        }).exec(function(err, item){
-          if(err){
-            return res.negotiate(err);
-          }
-          //sails.log.info(item);
-          if(item && item.id){
-            var criteria = {};
-            criteria[params.modelname] = item.id;
-            Archivo.findOne({
-              where: criteria,
-              populate: false
-            }).exec(function(err, archivo){
-              if(err){
-                return res.negotiate(err);
-              }
-              /*if(archivo && archivo.id){
-               // borrar
-               }else{*/
-              return Archivo.create(data).exec(function(err, archivo){
+          params = req.allParams()
+          ;
+        if(params.modelname && params.id){
+          data[params.modelname] = params.id;
+          var Model = sails.models[params.modelname];
+          return Model.findOne({
+            where: {
+              id: params.id
+            },
+            populate: false
+          }).exec(function(err, item){
+            if(err){
+              return res.negotiate(err);
+            }
+            //sails.log.info(item);
+            if(item && item.id){
+              var criteria = {};
+              criteria[params.modelname] = item.id;
+              Archivo.findOne({
+                where: criteria,
+                populate: false
+              }).exec(function(err, archivo){
                 if(err){
                   return res.negotiate(err);
                 }
-                res.json(archivo);
+                /*if(archivo && archivo.id){
+                 // borrar
+                 }else{*/
+                return Archivo.create(data).exec(function(err, archivo){
+                  if(err){
+                    return res.negotiate(err);
+                  }
+                  res.json(archivo);
+                });
+                //}
               });
-              //}
-            });
-          }
-        });
-      }else{
-        return res.notFound();
-      }
+            }
+          });
+        }else{
+          return res.notFound();
+        }
+      });
     });
   },
   download: function(req, res){

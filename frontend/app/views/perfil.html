@@ -10,7 +10,18 @@
   >
     <md-toolbar class="md-accent md-hue-1">
       <div class="md-toolbar-tools" layout-align="center center">
-        Menu
+        <div flex layout="column">
+          <md-button
+            ui-sref="perfil"
+          >
+            Menu
+          </md-button>
+        </div>
+        <div flex layout="column">
+          <md-button ui-sref="perfil.user">
+            Usuarios
+          </md-button>
+        </div>
       </div>
     </md-toolbar>
     <md-content flex layout="column">

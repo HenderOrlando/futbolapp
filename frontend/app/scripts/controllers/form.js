@@ -132,7 +132,7 @@ angular.module('futbolappApp')
             // Bien
             //console.log('cerrado form')
             //console.log(rta)
-            console.log(vars)
+            //console.log(vars)
             if(vars.name && vars.attr && vars.item){
               este(null, vars.item, vars.name, vars.attr);
             }else if(este){

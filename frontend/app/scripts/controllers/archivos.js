@@ -44,7 +44,7 @@ angular.module('futbolappApp')
     }
 
     function uploadFiles(){
-      console.log(vm.file)
+      //console.log(vm.file)
       if(vm.file.length > 0){
         var name = vm.file[0].name.split('.');
         Model.upload(vm.file, vm.title + '.' + name[1], item.id, modelname)

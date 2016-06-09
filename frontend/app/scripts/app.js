@@ -41,6 +41,12 @@ angular
         controller: 'MainCtrl',
         controllerAs: 'main'
       })
+      .state('perfil.user', {
+        url: '/usuarios',
+        templateUrl: 'views/perfiluser.html',
+        controller: 'PerfilUserCtrl',
+        controllerAs: 'perfiluser'
+      })
       .state('perfil', {
         url: '/:username',
         templateUrl: 'views/perfil.html',

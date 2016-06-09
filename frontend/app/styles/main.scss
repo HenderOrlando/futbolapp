@@ -2,7 +2,7 @@
 // endbower
 
 img{
-  .md-full-height{
+  &.md-full-height{
     max-height: 100%;
     max-width: 100%;
   }

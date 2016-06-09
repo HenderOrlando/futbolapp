@@ -24,7 +24,7 @@ angular.module('futbolappApp')
       User.find({
         id: storage.get('userid')
       }).then(function(user){
-        console.log(user)
+        //console.log(user)
         if(!user.id){
           user = user[0];
         }
